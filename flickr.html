@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div id="control">
+		<input type="text" id="itext"/>
+		<button id="bsearch">Search</button>
+		<button id="bclear">Clear</button>
+	</div>
+	<div id="content">
+		
+	</div>
+
+</body>
+
+<script type="text/javascript">
+	// 1c029a053d66b93bc624ef93f77e5f98
+
+	bclear = document.getElementById("bclear");
+	bsearch = document.getElementById("bsearch");
+	itext = document.getElementById("itext");
+	divcontent = document.getElementById("content");
+
+	// add event handler search button
+
+	bsearch.addEventListener("click", function () {
+		//newp = document.createElement("p");
+		//newp.innerHTML = itext.value;
+		//divcontent.appendChild(newp);
+
+		// https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=04affc099b81b7b911d4df63ca60272c&text=Viana+do+Castelo&extras=url_q&per_page=5&format=json&nojsoncallback=1
+
+		base_url = "https://api.flickr.com/services/rest/?";
+
+		method = "method=flickr.photos.search";
+		api_key= "api_key=1c029a053d66b93bc624ef93f77e5f98";
+		format = "format=json";
+		nojsoncallback = "nojsoncallback=1"
+		text = "text=" + itext.value;
+		per_page = "per_page=20";
+		extras = "extras=url_q";
+
+		call_url =  base_url + 
+					method   + "&" +
+					api_key  + "&" +
+					format   + "&" +
+					nojsoncallback + "&" +
+					extras 	 + "&" +
+					per_page + "&" +
+					text;
+
+		console.log(call_url);
+
+		// new request
+		request = new XMLHttpRequest();
+
+		// init the request
+		request.open("GET", call_url);
+
+		// register the handler
+
+		request.onreadystatechange = function () {
+			//console.log(request.readyState);
+			if (request.readyState == 4 && request.status == 200) {
+				photosJS = JSON.parse(request.responseText);
+
+				for(i=0; i<photosJS.photos.photo.length; i++) {
+					newimg = document.createElement("img");
+					newimg.setAttribute("src",photosJS.photos.photo[i].url_q);
+					divcontent.appendChild(newimg);
+				}
+				//console.log(photosJS);
+			}
+		}
+
+		// make the request
+		request.send();
+
+ 
+	})
+
+	// add event handler clear button
+
+	bclear.addEventListener("click", function () {
+		divcontent.innerHTML = "";
+	})
+
+
+</script>
+</html>
